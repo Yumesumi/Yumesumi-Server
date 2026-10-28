@@ -1,146 +1,745 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yumesumi</title>
-  <meta name="description" content="Yumesumi — 一个安静的角落。" />
-  <style>
-    :root {
-      --bg: #fbfbf9;
-      --fg: #1b1b19;
-      --muted: #7a7a72;
-      --line: #e4e3dc;
-      --accent: #2f6f4f;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111210;
-        --fg: #eeece5;
-        --muted: #8f8e86;
-        --line: #262821;
-        --accent: #7fc9a1;
-      }
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    * { box-sizing: border-box; }
+    <!-- JS 可用时才启用滚动入场；禁用 JS 时内容保持完整可见 -->
+    <script>
+      document.documentElement.classList.add('js-ready');
+    </script>
+    <noscript>
+      <style>
+        [data-reveal] {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
 
-    body {
-      margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      padding: 2rem;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-        "PingFang SC", "Microsoft YaHei", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
+    <title>梦澄服 · Yumesumi Server</title>
+    <meta
+      name="description"
+      content="梦澄服与梦澄整合包正在筹备中——一个还没醒来的 Minecraft 世界。版本、玩法与见面的日子，都还在梦里斟酌。"
+    />
+    <link rel="canonical" href="https://yumesumi.github.io/Yumesumi-Server/" />
 
-    main {
-      width: 100%;
-      max-width: 34rem;
-      animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    }
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="梦澄服 · Yumesumi Server" />
+    <meta property="og:title" content="梦澄服 · Yumesumi Server" />
+    <meta
+      property="og:description"
+      content="一个还没醒来的 Minecraft 世界。梦澄服与梦澄整合包，正在筹备中。"
+    />
+    <meta
+      property="og:image"
+      content="https://yumesumi.github.io/Yumesumi-Server/assets/og-cover.jpg"
+    />
+    <meta property="og:url" content="https://yumesumi.github.io/Yumesumi-Server/" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    <meta name="theme-color" content="#05050c" />
+    <meta name="color-scheme" content="dark" />
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.75rem;
-    }
+    <link rel="icon" href="assets/brand/favicon-64.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
-    .status::before {
-      content: "";
-      width: 0.4rem;
-      height: 0.4rem;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 0 var(--accent);
-      animation: pulse 2.4s ease-out infinite;
-    }
+    <link rel="preload" href="assets/fonts/misans-subset.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="assets/hero-night-1600.webp"
+      as="image"
+      imagesrcset="assets/hero-night-1600.webp 1600w, assets/hero-night-2560.webp 2560w"
+      imagesizes="100vw"
+    />
 
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(127, 201, 161, 0.45); }
-      70%  { box-shadow: 0 0 0 0.35rem rgba(127, 201, 161, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(127, 201, 161, 0); }
-    }
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-    h1 {
-      margin: 0 0 1rem;
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      line-height: 1.05;
-    }
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
 
-    p {
-      margin: 0;
-      max-width: 30rem;
-      color: var(--muted);
-      font-size: 1.0625rem;
-      line-height: 1.7;
-    }
+    <!-- 固定环境层：极光、网格、品牌水印、星空、暗角与噪点 -->
+    <div class="ambience" aria-hidden="true">
+      <div class="ambience__aurora ambience__aurora--a"></div>
+      <div class="ambience__aurora ambience__aurora--b"></div>
+      <div class="ambience__aurora ambience__aurora--c"></div>
+      <div class="ambience__grid"></div>
+      <div class="ambience__mark">
+        <img src="assets/brand/mark.png" alt="" width="300" height="300" loading="lazy" />
+      </div>
+      <div class="ambience__stars">
+        <!-- STARS_START -->
+        <span class="star is-star" style="--x:53.37%;--y:22.56%;--size:20.59px;--dur:11.52s;--delay:-3.62s;--peak:0.343;--floor:0.177;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:4.46vmin;--dy:0.91vmin;--ddur:75.85s;--ddelay:-52.72s"></span>
+        <span class="star is-star" style="--x:87.74%;--y:13.41%;--size:12.08px;--dur:17.28s;--delay:-18.31s;--peak:0.489;--floor:0.232;--ease:ease-in-out;--dx:-1.14vmin;--dy:-0.31vmin;--ddur:57.11s;--ddelay:-9.76s"></span>
+        <span class="star is-star" style="--x:10.08%;--y:30.77%;--size:9.99px;--dur:17.09s;--delay:-5.84s;--peak:0.514;--floor:0.178;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:3.45vmin;--dy:3.14vmin;--ddur:52.26s;--ddelay:-62.16s"></span>
+        <span class="star is-star" style="--x:48.83%;--y:89.28%;--size:20.19px;--dur:6.48s;--delay:-10.29s;--peak:0.339;--floor:0.151;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-0.14vmin;--dy:-0.38vmin;--ddur:76.69s;--ddelay:-64.22s"></span>
+        <span class="star is-star" style="--x:92.86%;--y:70.11%;--size:17.81px;--dur:10.50s;--delay:-6.38s;--peak:0.328;--floor:0.134;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-2.52vmin;--dy:-0.35vmin;--ddur:32.50s;--ddelay:-77.95s"></span>
+        <span class="star is-star" style="--x:22.24%;--y:60.76%;--size:10.71px;--dur:10.04s;--delay:-5.39s;--peak:0.407;--floor:0.169;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:0.75vmin;--dy:1.58vmin;--ddur:47.70s;--ddelay:-61.70s"></span>
+        <span class="star is-star" style="--x:3.71%;--y:37.72%;--size:11.90px;--dur:14.01s;--delay:-1.33s;--peak:0.481;--floor:0.214;--ease:ease-out;--dx:-4.66vmin;--dy:-2.92vmin;--ddur:35.22s;--ddelay:-73.84s"></span>
+        <span class="star is-star" style="--x:88.90%;--y:43.37%;--size:13.35px;--dur:6.79s;--delay:-14.24s;--peak:0.316;--floor:0.126;--ease:ease-in;--dx:-2.58vmin;--dy:1.44vmin;--ddur:75.50s;--ddelay:-50.59s"></span>
+        <span class="star is-star" style="--x:64.59%;--y:58.21%;--size:7.54px;--dur:6.89s;--delay:-17.85s;--peak:0.501;--floor:0.244;--ease:ease-in;--dx:-0.99vmin;--dy:1.18vmin;--ddur:68.32s;--ddelay:-16.52s"></span>
+        <span class="star is-star" style="--x:58.30%;--y:23.66%;--size:14.91px;--dur:12.91s;--delay:-3.19s;--peak:0.416;--floor:0.201;--ease:ease-in;--dx:1.12vmin;--dy:4.98vmin;--ddur:66.52s;--ddelay:-4.12s"></span>
+        <span class="star is-star" style="--x:42.34%;--y:15.57%;--size:15.22px;--dur:6.55s;--delay:-11.12s;--peak:0.301;--floor:0.153;--ease:ease-in;--dx:3.46vmin;--dy:-2.42vmin;--ddur:41.07s;--ddelay:-13.37s"></span>
+        <span class="star is-star" style="--x:69.52%;--y:79.16%;--size:13.60px;--dur:6.65s;--delay:-6.39s;--peak:0.286;--floor:0.149;--ease:ease-in-out;--dx:-3.96vmin;--dy:-1.54vmin;--ddur:62.73s;--ddelay:-56.37s"></span>
+        <span class="star is-star" style="--x:68.58%;--y:38.44%;--size:7.57px;--dur:8.57s;--delay:-18.31s;--peak:0.335;--floor:0.115;--ease:ease-out;--dx:4.33vmin;--dy:1.14vmin;--ddur:51.61s;--ddelay:-20.06s"></span>
+        <span class="star is-star" style="--x:70.35%;--y:62.02%;--size:7.36px;--dur:6.75s;--delay:-18.21s;--peak:0.330;--floor:0.127;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:3.72vmin;--dy:2.17vmin;--ddur:73.80s;--ddelay:-71.77s"></span>
+        <span class="star is-star" style="--x:10.05%;--y:85.87%;--size:8.43px;--dur:9.18s;--delay:-6.07s;--peak:0.335;--floor:0.145;--ease:ease-out;--dx:-1.51vmin;--dy:2.68vmin;--ddur:67.52s;--ddelay:-1.67s"></span>
+        <span class="star is-star" style="--x:41.30%;--y:51.99%;--size:10.24px;--dur:9.09s;--delay:-17.89s;--peak:0.360;--floor:0.139;--ease:ease-in-out;--dx:-1.74vmin;--dy:-0.24vmin;--ddur:61.30s;--ddelay:-40.42s"></span>
+        <span class="star is-star" style="--x:19.29%;--y:97.69%;--size:8.45px;--dur:17.91s;--delay:-8.60s;--peak:0.513;--floor:0.189;--ease:ease-in;--dx:-0.84vmin;--dy:-3.62vmin;--ddur:62.24s;--ddelay:-26.51s"></span>
+        <span class="star is-star" style="--x:53.59%;--y:11.47%;--size:17.75px;--dur:15.80s;--delay:-19.81s;--peak:0.416;--floor:0.196;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-4.58vmin;--dy:-3.30vmin;--ddur:61.15s;--ddelay:-28.15s"></span>
+        <span class="star is-star" style="--x:20.27%;--y:53.38%;--size:14.69px;--dur:14.93s;--delay:-17.07s;--peak:0.300;--floor:0.105;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:0.50vmin;--dy:4.62vmin;--ddur:56.95s;--ddelay:-6.17s"></span>
+        <span class="star is-star" style="--x:17.77%;--y:69.72%;--size:10.11px;--dur:10.78s;--delay:-2.56s;--peak:0.369;--floor:0.135;--ease:ease-in-out;--dx:6.36vmin;--dy:1.04vmin;--ddur:43.85s;--ddelay:-32.32s"></span>
+        <span class="star is-star" style="--x:63.63%;--y:88.81%;--size:16.60px;--dur:11.30s;--delay:-3.60s;--peak:0.311;--floor:0.157;--ease:ease-in;--dx:1.12vmin;--dy:-0.50vmin;--ddur:55.98s;--ddelay:-34.25s"></span>
+        <span class="star is-star" style="--x:85.27%;--y:23.86%;--size:7.03px;--dur:14.05s;--delay:-17.62s;--peak:0.550;--floor:0.252;--ease:ease-in-out;--dx:1.49vmin;--dy:-0.05vmin;--ddur:69.70s;--ddelay:-53.90s"></span>
+        <span class="star is-star" style="--x:77.29%;--y:48.83%;--size:10.08px;--dur:17.21s;--delay:-18.68s;--peak:0.519;--floor:0.190;--ease:ease-in;--dx:2.67vmin;--dy:-3.01vmin;--ddur:56.04s;--ddelay:-40.26s"></span>
+        <span class="star is-star" style="--x:32.27%;--y:80.26%;--size:9.64px;--dur:11.81s;--delay:-13.60s;--peak:0.484;--floor:0.161;--ease:ease-out;--dx:4.04vmin;--dy:-1.96vmin;--ddur:58.51s;--ddelay:-4.41s"></span>
+        <span class="star is-star" style="--x:66.83%;--y:72.36%;--size:11.22px;--dur:17.17s;--delay:-11.01s;--peak:0.363;--floor:0.181;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:1.11vmin;--dy:1.31vmin;--ddur:72.45s;--ddelay:-14.16s"></span>
+        <span class="star is-star" style="--x:86.72%;--y:43.82%;--size:10.11px;--dur:6.11s;--delay:-3.97s;--peak:0.300;--floor:0.132;--ease:ease-out;--dx:5.48vmin;--dy:0.34vmin;--ddur:48.08s;--ddelay:-48.84s"></span>
+        <span class="star is-dust" style="--x:80.31%;--y:65.69%;--size:2.51px;--dur:22.77s;--delay:-10.83s;--peak:0.199;--floor:0.076;--ease:ease-in;--dx:-0.15vmin;--dy:-0.64vmin;--ddur:55.34s;--ddelay:-46.71s"></span>
+        <span class="star is-dust" style="--x:84.25%;--y:73.69%;--size:3.53px;--dur:16.24s;--delay:-10.32s;--peak:0.232;--floor:0.094;--ease:ease-in;--dx:0.12vmin;--dy:-1.95vmin;--ddur:42.89s;--ddelay:-58.19s"></span>
+        <span class="star is-dust" style="--x:41.07%;--y:92.15%;--size:3.52px;--dur:22.93s;--delay:-16.61s;--peak:0.170;--floor:0.058;--ease:ease-in;--dx:-0.34vmin;--dy:1.67vmin;--ddur:33.94s;--ddelay:-42.66s"></span>
+        <span class="star is-dust" style="--x:44.63%;--y:96.25%;--size:2.61px;--dur:14.33s;--delay:-1.71s;--peak:0.191;--floor:0.075;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:4.89vmin;--dy:-0.43vmin;--ddur:45.23s;--ddelay:-62.34s"></span>
+        <span class="star is-dust" style="--x:57.58%;--y:25.50%;--size:2.66px;--dur:14.13s;--delay:-0.46s;--peak:0.204;--floor:0.095;--ease:ease-in-out;--dx:-4.00vmin;--dy:4.43vmin;--ddur:53.00s;--ddelay:-49.52s"></span>
+        <span class="star is-dust" style="--x:41.89%;--y:70.90%;--size:1.99px;--dur:13.38s;--delay:-17.85s;--peak:0.239;--floor:0.113;--ease:ease-in;--dx:3.18vmin;--dy:-0.35vmin;--ddur:79.75s;--ddelay:-8.06s"></span>
+        <span class="star is-dust" style="--x:1.86%;--y:92.12%;--size:1.96px;--dur:23.50s;--delay:-18.71s;--peak:0.284;--floor:0.135;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:1.47vmin;--dy:0.83vmin;--ddur:47.88s;--ddelay:-3.80s"></span>
+        <span class="star is-dust" style="--x:39.54%;--y:48.45%;--size:2.51px;--dur:23.97s;--delay:-11.30s;--peak:0.223;--floor:0.080;--ease:ease-in-out;--dx:3.92vmin;--dy:-1.06vmin;--ddur:61.42s;--ddelay:-1.70s"></span>
+        <span class="star is-dust" style="--x:74.78%;--y:60.52%;--size:2.40px;--dur:17.87s;--delay:-13.36s;--peak:0.313;--floor:0.116;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-4.15vmin;--dy:-0.35vmin;--ddur:43.05s;--ddelay:-0.01s"></span>
+        <span class="star is-dust" style="--x:46.70%;--y:73.53%;--size:1.65px;--dur:11.78s;--delay:-4.46s;--peak:0.250;--floor:0.086;--ease:ease-out;--dx:1.46vmin;--dy:0.25vmin;--ddur:51.49s;--ddelay:-36.79s"></span>
+        <span class="star is-dust" style="--x:26.97%;--y:37.02%;--size:2.66px;--dur:14.61s;--delay:-3.00s;--peak:0.166;--floor:0.056;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:1.24vmin;--dy:-3.43vmin;--ddur:37.81s;--ddelay:-26.29s"></span>
+        <span class="star is-dust" style="--x:9.78%;--y:10.11%;--size:3.20px;--dur:20.31s;--delay:-17.89s;--peak:0.247;--floor:0.111;--ease:ease-in-out;--dx:-2.76vmin;--dy:-1.16vmin;--ddur:68.40s;--ddelay:-25.97s"></span>
+        <span class="star is-dust" style="--x:26.06%;--y:34.96%;--size:2.30px;--dur:20.55s;--delay:-19.65s;--peak:0.279;--floor:0.131;--ease:ease-in-out;--dx:1.01vmin;--dy:-0.66vmin;--ddur:50.13s;--ddelay:-64.43s"></span>
+        <span class="star is-dust" style="--x:76.82%;--y:31.27%;--size:3.32px;--dur:19.97s;--delay:-6.67s;--peak:0.216;--floor:0.091;--ease:ease-out;--dx:-5.19vmin;--dy:-3.04vmin;--ddur:66.57s;--ddelay:-43.88s"></span>
+        <span class="star is-dust" style="--x:78.57%;--y:88.06%;--size:2.60px;--dur:14.47s;--delay:-17.18s;--peak:0.300;--floor:0.136;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:0.08vmin;--dy:-0.25vmin;--ddur:47.61s;--ddelay:-25.34s"></span>
+        <span class="star is-dust" style="--x:95.41%;--y:8.56%;--size:2.23px;--dur:13.16s;--delay:-19.11s;--peak:0.313;--floor:0.142;--ease:ease-out;--dx:-1.41vmin;--dy:-1.99vmin;--ddur:55.22s;--ddelay:-60.72s"></span>
+        <span class="star is-dust" style="--x:0.66%;--y:27.34%;--size:2.88px;--dur:10.11s;--delay:-0.34s;--peak:0.277;--floor:0.127;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:0.83vmin;--dy:-1.76vmin;--ddur:42.87s;--ddelay:-56.21s"></span>
+        <span class="star is-dust" style="--x:14.84%;--y:71.32%;--size:2.74px;--dur:14.71s;--delay:-19.87s;--peak:0.233;--floor:0.112;--ease:ease-in-out;--dx:-2.03vmin;--dy:-0.84vmin;--ddur:42.48s;--ddelay:-4.11s"></span>
+        <span class="star is-dust" style="--x:61.61%;--y:58.93%;--size:2.34px;--dur:11.80s;--delay:-18.11s;--peak:0.280;--floor:0.141;--ease:ease-in-out;--dx:0.09vmin;--dy:-5.80vmin;--ddur:62.89s;--ddelay:-55.26s"></span>
+        <span class="star is-dust" style="--x:76.15%;--y:59.45%;--size:3.25px;--dur:12.42s;--delay:-17.23s;--peak:0.180;--floor:0.067;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-3.29vmin;--dy:1.72vmin;--ddur:68.98s;--ddelay:-57.83s"></span>
+        <span class="star is-dust" style="--x:70.01%;--y:32.73%;--size:1.90px;--dur:11.71s;--delay:-9.47s;--peak:0.280;--floor:0.127;--ease:ease-in;--dx:-5.79vmin;--dy:2.08vmin;--ddur:34.15s;--ddelay:-44.41s"></span>
+        <span class="star is-dust" style="--x:33.61%;--y:93.36%;--size:1.32px;--dur:20.41s;--delay:-5.32s;--peak:0.331;--floor:0.124;--ease:ease-in-out;--dx:0.62vmin;--dy:-3.62vmin;--ddur:64.47s;--ddelay:-71.96s"></span>
+        <span class="star is-dust" style="--x:24.47%;--y:60.98%;--size:1.43px;--dur:20.25s;--delay:-1.53s;--peak:0.178;--floor:0.079;--ease:ease-in-out;--dx:-2.40vmin;--dy:3.03vmin;--ddur:58.44s;--ddelay:-68.15s"></span>
+        <span class="star is-dust" style="--x:72.44%;--y:95.38%;--size:3.11px;--dur:15.77s;--delay:-17.16s;--peak:0.271;--floor:0.122;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-4.41vmin;--dy:-1.80vmin;--ddur:76.01s;--ddelay:-16.24s"></span>
+        <span class="star is-dust" style="--x:50.97%;--y:15.37%;--size:2.58px;--dur:14.74s;--delay:-18.06s;--peak:0.292;--floor:0.149;--ease:ease-out;--dx:3.23vmin;--dy:0.57vmin;--ddur:34.82s;--ddelay:-69.77s"></span>
+        <span class="star is-dust" style="--x:61.87%;--y:72.86%;--size:3.14px;--dur:17.81s;--delay:-6.06s;--peak:0.243;--floor:0.094;--ease:ease-in-out;--dx:-3.80vmin;--dy:2.84vmin;--ddur:78.58s;--ddelay:-73.74s"></span>
+        <span class="star is-dust" style="--x:47.70%;--y:37.33%;--size:3.10px;--dur:14.27s;--delay:-13.47s;--peak:0.162;--floor:0.073;--ease:cubic-bezier(0.4, 0, 0.6, 1);--dx:-2.30vmin;--dy:1.23vmin;--ddur:47.68s;--ddelay:-10.22s"></span>
+        <span class="star is-dust" style="--x:31.29%;--y:71.94%;--size:1.76px;--dur:20.35s;--delay:-16.06s;--peak:0.177;--floor:0.080;--ease:ease-in-out;--dx:-1.16vmin;--dy:-0.56vmin;--ddur:33.56s;--ddelay:-13.70s"></span>
+        <!-- STARS_END -->
+      </div>
+      <div class="ambience__vignette"></div>
+      <div class="ambience__grain"></div>
+    </div>
 
-    footer {
-      margin-top: 2.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--line);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem 1.5rem;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.875rem;
-    }
+    <header class="nav" data-nav>
+      <div class="nav__inner container">
+        <a class="nav__brand" href="#top" aria-label="梦澄服 首页">
+          <img class="nav__mark" src="assets/brand/mark.png" width="30" height="30" alt="" />
+          <span class="nav__name">梦澄服</span>
+          <span class="nav__alt">YUMESUMI SERVER</span>
+        </a>
 
-    footer span { color: var(--muted); }
+        <nav class="nav__links" aria-label="页面导航">
+          <a href="#teaser">预告</a>
+          <a href="#worlds">世界</a>
+          <a href="#outro">见面</a>
+        </nav>
 
-    a {
-      color: var(--fg);
-      text-decoration: none;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 0.1rem;
-      transition: border-color 0.2s ease, color 0.2s ease;
-    }
+        <div class="nav__actions">
+          <a class="nav__back" href="https://yumesumi.cyou">
+            返回主站
+            <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+              <path
+                d="M7 17 17 7M9 7h8v8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
 
-    a:hover { color: var(--accent); border-color: var(--accent); }
+          <button
+            class="nav__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-menu"
+            aria-label="打开菜单"
+            data-menu-toggle
+          >
+            <span class="nav__toggle-label">MENU</span>
+            <span class="nav__toggle-icon" aria-hidden="true"><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </header>
 
-    @media (prefers-reduced-motion: reduce) {
-      main, .status::before { animation: none; }
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <div class="status">online</div>
+    <div class="menu" id="site-menu" hidden data-menu role="dialog" aria-modal="true" aria-label="站点菜单">
+      <div class="menu__bar container">
+        <span class="menu__bar-brand">
+          <img src="assets/brand/mark.png" width="26" height="26" alt="" />
+          梦澄服
+        </span>
+        <button class="menu__close" type="button" data-menu-close>
+          关闭
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
 
-    <h1>Yumesumi</h1>
+      <div class="menu__inner container">
+        <nav aria-label="移动端导航">
+          <ul class="menu__list">
+            <li><a class="menu__link" href="#teaser"><span class="menu__index">01</span>预告<span class="menu__alt">TEASER</span></a></li>
+            <li><a class="menu__link" href="#worlds"><span class="menu__index">02</span>世界<span class="menu__alt">WORLDS</span></a></li>
+            <li><a class="menu__link" href="#outro"><span class="menu__index">03</span>见面<span class="menu__alt">SOMEDAY</span></a></li>
+          </ul>
+        </nav>
+        <div class="menu__foot">
+          <a href="https://yumesumi.cyou">返回主站 ↗</a>
+          <a href="https://github.com/Yumesumi/Yumesumi-Server" rel="noopener noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </div>
 
-    <p>
-      一个安静的角落，用来放置一些小东西。<br />
-      这里还在搭建中，很快就会有点内容。
-    </p>
+    <main id="main">
+      <!-- ============ 首屏 ============ -->
+      <section class="hero" id="top" data-hero>
+        <div class="hero__media" aria-hidden="true">
+          <img
+            src="assets/hero-night-1600.webp"
+            srcset="assets/hero-night-1600.webp 1600w, assets/hero-night-2560.webp 2560w"
+            sizes="100vw"
+            width="2560"
+            height="1440"
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+        <div class="hero__shade" aria-hidden="true"></div>
+        <div class="hero__scan" aria-hidden="true"></div>
+        <div class="hero__hud" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
 
-    <footer>
-      <span>© <span id="year">2026</span> Yumesumi</span>
-      <a href="https://github.com/Yumesumi/Yumesumi-Server" target="_blank" rel="noopener">GitHub</a>
+        <div class="hero__content container">
+          <p class="eyebrow hero__eyebrow">MINECRAFT SERVER &amp; MODPACK</p>
+
+          <h1 class="hero__logo">
+            <img
+              src="assets/brand/logo.png"
+              width="585"
+              height="331"
+              alt="梦澄服 · Yumesumi Server"
+              fetchpriority="high"
+            />
+          </h1>
+
+          <p class="hero__status">
+            <span class="status-dot" aria-hidden="true"></span>
+            筹备中 · 尚未定档
+          </p>
+
+          <p class="hero__lede">
+            一个还没醒来的世界。<br />
+            版本、玩法，还有见面的日子，都还在梦里斟酌。
+          </p>
+
+          <div class="hero__actions">
+            <a class="button button--primary" href="https://yumesumi.cyou">
+              返回主站
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                  d="M7 17 17 7M9 7h8v8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+            <a class="scroll-link" href="#teaser">
+              先看看世界
+              <span class="scroll-link__line" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__foot container">
+          <dl class="spec">
+            <div class="spec__item">
+              <dt>VERSION</dt>
+              <dd>待定</dd>
+            </div>
+            <div class="spec__item">
+              <dt>GAMEPLAY</dt>
+              <dd>待定</dd>
+            </div>
+            <div class="spec__item">
+              <dt>LAUNCH</dt>
+              <dd>敬请期待</dd>
+            </div>
+          </dl>
+          <a class="scroll-cue" href="#teaser" aria-label="向下滚动">
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ============ 预告 ============ -->
+      <section class="section" id="teaser">
+        <div class="container">
+          <header class="section__head" data-reveal>
+            <p class="eyebrow">TEASER · 预告</p>
+            <h2 class="section__title">
+              两个世界，<br class="br-mobile" />正在成形
+            </h2>
+            <p class="section__lede">
+              梦澄服负责常驻的远方，梦澄整合包负责把它带回家。它们都还没长成满意的样子，所以我们决定再多藏一会儿。
+            </p>
+          </header>
+
+          <div class="projects">
+            <article class="project" data-reveal>
+              <div class="project__media">
+                <img
+                  src="assets/world-lava-mountain-1600.webp"
+                  srcset="assets/world-lava-mountain-900.webp 900w, assets/world-lava-mountain-1600.webp 1600w"
+                  sizes="(max-width: 899px) 100vw, 50vw"
+                  width="1600"
+                  height="900"
+                  alt="夜色中的石山，山体内部透出橙红色熔岩的光"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="project__index">01</span>
+                <span class="chip">筹备中</span>
+              </div>
+              <div class="project__body">
+                <p class="project__alt">YUMESUMI SERVER</p>
+                <h3 class="project__title">梦澄服</h3>
+                <p class="project__desc">
+                  一座长期在线的 Minecraft 世界。地形、节奏与玩法都还在反复打磨，暂时没有版本号，也没有开服日期。
+                </p>
+                <p class="project__meta">
+                  <span class="status-dot" aria-hidden="true"></span>
+                  等待一个合适的时机
+                </p>
+              </div>
+            </article>
+
+            <article class="project" data-reveal style="--reveal-delay: 120ms">
+              <div class="project__media">
+                <img
+                  src="assets/world-night-flight-1600.webp"
+                  srcset="assets/world-night-flight-900.webp 900w, assets/world-night-flight-1600.webp 1600w"
+                  sizes="(max-width: 899px) 100vw, 50vw"
+                  width="1600"
+                  height="900"
+                  alt="夜空里由方块构成的火橙色巨兽，身上点缀着灯火"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="project__index">02</span>
+                <span class="chip">筹备中</span>
+              </div>
+              <div class="project__body">
+                <p class="project__alt">YUMESUMI MODPACK</p>
+                <h3 class="project__title">梦澄整合包</h3>
+                <p class="project__desc">
+                  把同一段世界打包带走。它会和服务器一起长大，内容与手感仍在调整，细节先留一点悬念。
+                </p>
+                <p class="project__meta">
+                  <span class="status-dot" aria-hidden="true"></span>
+                  同样在筹备中
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 世界 ============ -->
+      <section class="section" id="worlds">
+        <div class="container">
+          <header class="section__head section__head--split" data-reveal>
+            <div>
+              <p class="eyebrow">WORLDS · 世界</p>
+              <h2 class="section__title">先看几眼，<br />再做打算</h2>
+            </div>
+            <p class="section__lede">
+              这些是梦里已经出现过的地方。它们会不会出现在最终的世界里？我们也没想好。
+            </p>
+          </header>
+
+          <div class="gallery">
+            <figure class="shot shot--a" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-underwater-900.webp"
+                  srcset="assets/world-underwater-900.webp 900w, assets/world-underwater-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 58vw"
+                  width="1600"
+                  height="900"
+                  alt="深海中的方块遗迹，周围生长着荧光珊瑚"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">01</span>
+                <span class="shot__name">深海旧城</span>
+                <span class="shot__alt">DROWNED CITY</span>
+              </figcaption>
+            </figure>
+
+            <figure class="shot shot--b" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-mansion-900.webp"
+                  srcset="assets/world-mansion-900.webp 900w, assets/world-mansion-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 42vw"
+                  width="1600"
+                  height="900"
+                  alt="黄昏时的白色石砌大宅，被白桦与花田环绕"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">02</span>
+                <span class="shot__name">黄昏宅邸</span>
+                <span class="shot__alt">MANSION AT DUSK</span>
+              </figcaption>
+            </figure>
+
+            <figure class="shot shot--c" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-sunrise-900.webp"
+                  srcset="assets/world-sunrise-900.webp 900w, assets/world-sunrise-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 33vw"
+                  width="1600"
+                  height="900"
+                  alt="粉色晨雾中的塔影与层叠树冠"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">03</span>
+                <span class="shot__name">云海塔影</span>
+                <span class="shot__alt">SUNRISE</span>
+              </figcaption>
+            </figure>
+
+            <figure class="shot shot--d" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-cloud-towers-900.webp"
+                  srcset="assets/world-cloud-towers-900.webp 900w, assets/world-cloud-towers-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 66vw"
+                  width="1600"
+                  height="900"
+                  alt="云层之上密集而鲜艳的彩色高塔群"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">04</span>
+                <span class="shot__name">云上塔群</span>
+                <span class="shot__alt">CLOUD TOWERS</span>
+              </figcaption>
+            </figure>
+
+            <figure class="shot shot--e" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-night-flight-900.webp"
+                  srcset="assets/world-night-flight-900.webp 900w, assets/world-night-flight-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 50vw"
+                  width="1600"
+                  height="900"
+                  alt="夜空中由灯火勾勒的巨兽剪影"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">05</span>
+                <span class="shot__name">夜航</span>
+                <span class="shot__alt">NIGHT FLIGHT</span>
+              </figcaption>
+            </figure>
+
+            <figure class="shot shot--f" data-reveal>
+              <div class="shot__media">
+                <img
+                  src="assets/world-lava-mountain-900.webp"
+                  srcset="assets/world-lava-mountain-900.webp 900w, assets/world-lava-mountain-1600.webp 1600w"
+                  sizes="(max-width: 767px) 100vw, 50vw"
+                  width="1600"
+                  height="900"
+                  alt="夜里的山峦，岩缝中流淌着发光的熔岩"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <span class="shot__index">06</span>
+                <span class="shot__name">熔岩山腹</span>
+                <span class="shot__alt">LAVA MOUNTAIN</span>
+              </figcaption>
+            </figure>
+          </div>
+
+          <p class="gallery__note" data-reveal>—— 以上皆为梦境草稿，最终以醒来时的世界为准。</p>
+        </div>
+      </section>
+
+      <!-- ============ 见面 ============ -->
+      <section class="outro" id="outro">
+        <div class="outro__media" aria-hidden="true">
+          <img
+            src="assets/world-mansion-1600.webp"
+            srcset="
+              assets/world-mansion-900.webp   900w,
+              assets/world-mansion-1600.webp 1600w,
+              assets/world-mansion-2560.webp 2560w
+            "
+            sizes="100vw"
+            width="1600"
+            height="900"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="outro__shade" aria-hidden="true"></div>
+
+        <div class="outro__content container" data-reveal>
+          <p class="eyebrow">SOMEDAY · 见面</p>
+          <h2 class="outro__title">在梦里<br />先见一面。</h2>
+          <p class="outro__lede">
+            梦澄服与梦澄整合包，都会在准备好的时候与大家见面。<br />
+            不着急，好世界值得多等一会儿。
+          </p>
+          <div class="outro__actions">
+            <a class="button button--primary" href="https://yumesumi.cyou">
+              返回主站
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                  d="M7 17 17 7M9 7h8v8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+            <a
+              class="button button--ghost"
+              href="https://github.com/Yumesumi/Yumesumi-Server"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              在 GitHub 关注进度
+            </a>
+          </div>
+          <p class="outro__note">没有倒计时，也没有预约按钮——等我们想好了，会先在这里说。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <img src="assets/brand/mark.png" width="40" height="40" alt="" loading="lazy" />
+            <div>
+              <p class="footer__name">梦澄服</p>
+              <p class="footer__alt">YUMESUMI SERVER</p>
+            </div>
+          </div>
+          <p class="footer__tagline">
+            梦澄中心旗下的 Minecraft 服务器与整合包计划。<br />
+            还在梦里，但已经在路上。
+          </p>
+        </div>
+
+        <div class="footer__grid">
+          <nav class="footer__col" aria-label="本站导航">
+            <h2>本站</h2>
+            <a href="#teaser">预告</a>
+            <a href="#worlds">世界</a>
+            <a href="#outro">见面</a>
+          </nav>
+          <nav class="footer__col" aria-label="相关链接">
+            <h2>相关</h2>
+            <a href="https://yumesumi.cyou" rel="noopener noreferrer">梦澄中心</a>
+            <a
+              href="https://github.com/Yumesumi/Yumesumi-Server"
+              target="_blank"
+              rel="noopener noreferrer"
+              >GitHub</a
+            >
+          </nav>
+          <div class="footer__col">
+            <h2>状态</h2>
+            <p>筹备中</p>
+            <p>版本与玩法待定</p>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p>© 2026 梦澄中心 · Yumesumi Center</p>
+          <p>
+            Minecraft 是 Mojang Studios 的商标；本站为爱好者项目，与 Mojang / Microsoft
+            无隶属关系。
+          </p>
+        </div>
+      </div>
     </footer>
-  </main>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-</body>
+    <script>
+      (function () {
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        // ---------- 导航滚动状态 ----------
+        var nav = document.querySelector('[data-nav]');
+        var onScroll = function () {
+          if (!nav) return;
+          nav.classList.toggle('is-scrolled', window.scrollY > 24);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // ---------- 移动端菜单 ----------
+        var toggle = document.querySelector('[data-menu-toggle]');
+        var panel = document.querySelector('[data-menu]');
+        if (toggle && panel) {
+          var pageChrome = [
+            document.querySelector('[data-nav]'),
+            document.getElementById('main'),
+            document.querySelector('.footer'),
+          ].filter(Boolean);
+
+          var focusables = function () {
+            return Array.prototype.filter.call(
+              panel.querySelectorAll('a[href], button:not([disabled])'),
+              function (el) {
+                return el.offsetParent !== null;
+              }
+            );
+          };
+
+          var setOpen = function (open) {
+            panel.hidden = !open;
+            toggle.setAttribute('aria-expanded', String(open));
+            document.documentElement.style.overflow = open ? 'hidden' : '';
+            pageChrome.forEach(function (el) {
+              el.inert = open;
+            });
+            if (open) {
+              requestAnimationFrame(function () {
+                panel.classList.add('is-open');
+                var first = panel.querySelector('.menu__link');
+                if (first) first.focus();
+              });
+            } else {
+              panel.classList.remove('is-open');
+              toggle.focus();
+            }
+          };
+
+          toggle.addEventListener('click', function () {
+            setOpen(panel.hasAttribute('hidden'));
+          });
+
+          var closeButton = panel.querySelector('[data-menu-close]');
+          if (closeButton) {
+            closeButton.addEventListener('click', function () {
+              setOpen(false);
+            });
+          }
+
+          panel.addEventListener('click', function (event) {
+            if (event.target.closest('a[href]')) setOpen(false);
+          });
+
+          document.addEventListener('keydown', function (event) {
+            if (panel.hidden) return;
+
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              setOpen(false);
+              return;
+            }
+
+            if (event.key === 'Tab') {
+              var items = focusables();
+              if (!items.length) return;
+              var first = items[0];
+              var last = items[items.length - 1];
+              if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+              } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+              }
+            }
+          });
+        }
+
+        // ---------- 滚动入场 ----------
+        var reveals = document.querySelectorAll('[data-reveal]');
+        if ('IntersectionObserver' in window && !reduceMotion.matches) {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-in');
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+          );
+          reveals.forEach(function (el) {
+            observer.observe(el);
+          });
+        } else {
+          reveals.forEach(function (el) {
+            el.classList.add('is-in');
+          });
+        }
+
+        // ---------- 首屏背景视差 ----------
+        var hero = document.querySelector('[data-hero]');
+        var media = hero ? hero.querySelector('.hero__media') : null;
+        if (hero && media && !reduceMotion.matches) {
+          var frame = 0;
+          var paint = function () {
+            frame = 0;
+            var y = Math.min(window.scrollY, window.innerHeight);
+            media.style.transform = 'translate3d(0, ' + y * 0.16 + 'px, 0) scale(1.04)';
+          };
+          window.addEventListener(
+            'scroll',
+            function () {
+              if (!frame) frame = requestAnimationFrame(paint);
+            },
+            { passive: true }
+          );
+          paint();
+        }
+      })();
+    </script>
+  </body>
 </html>
