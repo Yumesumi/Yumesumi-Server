@@ -472,7 +472,12 @@ ol {
   inline-size: 1.9rem;
   block-size: 1.9rem;
   object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 45%));
+  opacity: 0.88;
+  transition: opacity var(--ys-dur-fast) var(--ys-ease-out);
+}
+
+.nav__brand:hover .nav__mark {
+  opacity: 1;
 }
 
 .nav__name {
@@ -648,6 +653,7 @@ ol {
   inline-size: 1.6rem;
   block-size: 1.6rem;
   object-fit: contain;
+  opacity: 0.88;
 }
 
 .menu__close {
@@ -927,11 +933,6 @@ ol {
 
 .button--primary {
   background-color: color-mix(in srgb, var(--ys-purple) 20%, transparent);
-}
-
-.button--ghost {
-  color: var(--ys-text-secondary);
-  border-color: var(--ys-border);
 }
 
 .scroll-link {
@@ -1407,7 +1408,7 @@ main > section:not(:first-of-type)::before {
   inline-size: 2.4rem;
   block-size: 2.4rem;
   object-fit: contain;
-  filter: drop-shadow(0 3px 8px rgb(0 0 0 / 45%));
+  opacity: 0.88;
 }
 
 .footer__name {
