@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yumesumi</title>
+  <meta name="description" content="Yumesumi — 一个安静的角落。" />
+  <style>
+    :root {
+      --bg: #fbfbf9;
+      --fg: #1b1b19;
+      --muted: #7a7a72;
+      --line: #e4e3dc;
+      --accent: #2f6f4f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111210;
+        --fg: #eeece5;
+        --muted: #8f8e86;
+        --line: #262821;
+        --accent: #7fc9a1;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    main {
+      width: 100%;
+      max-width: 34rem;
+      animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .status::before {
+      content: "";
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 var(--accent);
+      animation: pulse 2.4s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(127, 201, 161, 0.45); }
+      70%  { box-shadow: 0 0 0 0.35rem rgba(127, 201, 161, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(127, 201, 161, 0); }
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    p {
+      margin: 0;
+      max-width: 30rem;
+      color: var(--muted);
+      font-size: 1.0625rem;
+      line-height: 1.7;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.875rem;
+    }
+
+    footer span { color: var(--muted); }
+
+    a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.1rem;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    a:hover { color: var(--accent); border-color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      main, .status::before { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="status">online</div>
+
+    <h1>Yumesumi</h1>
+
+    <p>
+      一个安静的角落，用来放置一些小东西。<br />
+      这里还在搭建中，很快就会有点内容。
+    </p>
+
+    <footer>
+      <span>© <span id="year">2026</span> Yumesumi</span>
+      <a href="https://github.com/Yumesumi/Yumesumi-Server" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
